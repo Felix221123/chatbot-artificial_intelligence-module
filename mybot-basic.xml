@@ -1,0 +1,166 @@
+<aiml version="1.0.1" encoding="UTF-8">
+
+<!-- Greetings and Politeness -->
+<category> <pattern> HELLO </pattern>
+  <template>Hello! How are you?</template> </category>
+
+<category> <pattern> HELLO * </pattern>
+  <template><srai>HELLO</srai></template> </category>
+
+<category> <pattern> HI </pattern>
+  <template><srai>HELLO</srai></template> </category>
+
+<category> <pattern> HI * </pattern>
+  <template><srai>HELLO</srai></template> </category>
+
+<category> <pattern> HOW ARE YOU </pattern>
+  <template>I'm functioning within normal parameters, thanks for asking.</template></category>
+
+<category><pattern> I AM FINE </pattern>
+  <template>That's good to know. What would you like to discuss about?</template></category>
+
+<category><pattern> BYE </pattern>
+  <template>#0$Bye! Nice talking to you. You take care now.</template></category>
+
+<category><pattern> GOODBYE </pattern>
+  <template><srai>BYE</srai></template></category>
+
+<category><pattern> EXIT </pattern>
+  <template><srai>BYE</srai></template></category>
+
+<category> <pattern> THANKS </pattern>
+  <template>You are welcome.</template></category>
+
+<category> <pattern> THANK YOU </pattern>
+  <template><srai>THANKS</srai></template></category>
+
+<category> <pattern> CHEERS </pattern>
+  <template>Sure mate.</template></category>
+
+<category> <pattern> CHEERS * </pattern>
+  <template>Sure mate.</template></category>
+
+<!--- Wikipedia API -->
+<category><pattern> WHAT IS A * </pattern>
+  <template>#1$<star index="1"/></template></category>
+
+<category><pattern> WHAT IS AN * </pattern>
+  <template><srai>WHAT IS A <star/></srai></template></category>
+
+<category><pattern> WHAT IS * </pattern>
+  <template><srai>WHAT IS A <star/></srai></template></category>
+
+<category><pattern> DEFINE * </pattern>
+  <template><srai>WHAT IS A <star/></srai></template></category>
+
+<category><pattern> WHO IS * </pattern>
+  <template><srai>WHAT IS A <star/></srai></template></category>
+
+<!-- Default reaction -->
+<category><pattern> * </pattern>
+  <template>#99$<star index="1"/></template></category>
+
+
+<!-- Financial Markets: Definitions and Concepts -->
+
+<category> <pattern>WHAT IS A STOCK</pattern>
+  <template>A stock represents ownership in a company and gives shareholders a claim on its assets and earnings.</template> </category>
+
+<category>
+  <pattern>WHAT IS A SHARE</pattern>
+  <template>A share is a single unit of ownership in a company that represents a portion of its capital.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS THE DIFFERENCE BETWEEN STOCK AND SHARE</pattern>
+  <template>“Stock” refers to ownership in general, while “share” refers to specific units of that ownership within a company.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS A BOND</pattern>
+  <template>A bond is a fixed-income instrument where investors lend money to a borrower, typically a corporation or government, in exchange for periodic interest payments and return of principal at maturity.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS A MUTUAL FUND</pattern>
+  <template>A mutual fund pools money from multiple investors to invest in a diversified portfolio of stocks, bonds, or other securities managed by professionals.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS AN ETF</pattern>
+  <template>An ETF, or Exchange Traded Fund, is a collection of securities that tracks an index and trades on an exchange like a stock.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS INFLATION</pattern>
+  <template>Inflation is the rate at which the general level of prices for goods and services rises, eroding purchasing power over time.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS DEFLATION</pattern>
+  <template>Deflation is a decrease in the general price level of goods and services, often associated with reduced spending and economic slowdown.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS INTEREST RATE</pattern>
+  <template>An interest rate is the percentage charged on a loan or paid on savings over a specific period, representing the cost of borrowing or reward for saving.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS A DIVIDEND</pattern>
+  <template>A dividend is a portion of a company’s earnings distributed to shareholders, usually paid quarterly.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS CAPITAL GAIN</pattern>
+  <template>A capital gain occurs when an investment is sold for more than its purchase price.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS MARKET CAPITALIZATION</pattern>
+  <template>Market capitalization is the total market value of a company’s outstanding shares, calculated as share price multiplied by total shares.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS A BEAR MARKET</pattern>
+  <template>A bear market is a period in which stock prices fall by 20% or more from recent highs, often accompanied by pessimism and economic slowdown.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS A BULL MARKET</pattern>
+  <template>A bull market is a sustained period of rising stock prices, typically fueled by investor optimism and economic growth.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS DIVERSIFICATION</pattern>
+  <template>Diversification is the practice of spreading investments across various assets to reduce overall risk.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS RISK MANAGEMENT</pattern>
+  <template>Risk management involves identifying, assessing, and controlling threats to an investment’s capital or returns.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS PORTFOLIO</pattern>
+  <template>A portfolio is a collection of financial assets such as stocks, bonds, and cash held by an investor.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS LIQUIDITY</pattern>
+  <template>Liquidity refers to how quickly and easily an asset can be converted into cash without significantly affecting its price.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS A DERIVATIVE</pattern>
+  <template>A derivative is a financial contract whose value depends on the price of an underlying asset, index, or rate, such as futures or options.</template>
+</category>
+
+<category>
+  <pattern>WHAT IS SHORT SELLING</pattern>
+  <template>Short selling is the act of borrowing a security, selling it, and later repurchasing it at a lower price to profit from a decline in value.</template>
+</category>
+
+
+</aiml>
+

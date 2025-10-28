@@ -1,0 +1,5 @@
+# add requirements here
+# pip install -r requirements.txt
+
+python-aiml
+wikipedia
