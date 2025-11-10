@@ -9,15 +9,35 @@ import wikipedia
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-import re
+from format import preprocess_input, detect_knowledge_action, to_first_order_logic
+from rule_base import load_knowledge_base_file, add_fact_to_knowledge_base,check_fact
+
 
 # Create a Kernel object.
 kern = aiml.Kernel()
 kern.setTextEncoding(None)
 kern.bootstrap(learnFiles="mybot-basic.xml")
 
-# Loading the csv file using the panda library
+# Loading the financial q&a csv file using the panda library
 qa_df = pd.read_csv("financial-qa.csv", quotechar='"', escapechar='\\')
+
+# Loading the knowledge based file 
+kb = load_knowledge_base_file("knowledge_base.csv")
+print(f"Knowledge base loaded with {len(kb)} finance rules.")
+
+# Extra facts to make sure 
+extra_facts = [
+    "bond(bond)",
+    "stock(stock)",
+    "etf(etf)",
+    "bitcoin(bitcoin)",
+    "cryptocurrency(bitcoin)"
+]
+from nltk.sem import Expression
+read_expression = Expression.fromstring
+for f in extra_facts:
+    kb.append(read_expression(f))
+
 
 
 # Welcome user
@@ -46,47 +66,25 @@ def find_similar_question(user_input):
     else:
         return "Sorry, I don't have an answer for that yet."
 
-# function to preprocess text before vectorizing to find a match
-def preprocess_input(text):
-    text = text.lower()
-
-    # Common filler words and phrases that add no real meaning
-    stop_phrases = [
-        "do you know", "can you tell me", "please", "could you", "would you", "i want to know",
-        "can you explain", "tell me about", "give me info about", "give me information about",
-        "explain", "let me know", "kindly", "do you think", "what can you say about",
-        "i would like to know", "i'm curious about", "can you describe"
-    ]
-
-    stop_words = [
-        "a", "an", "the", "then", "of", "is", "are", "was", "were",
-        "and", "or", "in", "on", "at", "for", "to", "from", "by", "about",
-        "that", "this", "those", "these", "it", "its", "me", "my", "you",
-        "your", "yours", "our", "us", "we", "they", "them", "their", "there",
-        "what", "who", "when", "where", "how", "why", "does", "do", "did",
-        "will", "would", "should", "could", "can", "may"
-    ]
-
-    # Remove whole filler phrases first (important to do before single words)
-    for phrase in stop_phrases:
-        text = text.replace(phrase, " ")
-
-    # Then remove individual common stop words
-    pattern = r'\b(' + '|'.join(stop_words) + r')\b'
-    text = re.sub(pattern, '', text)
-
-    # Remove extra whitespace
-    text = re.sub(r'\s+', ' ', text).strip()
-
-    return text
-
-
 
 # Main loop
 while True:
     #get user input
     try:
         userInput = input("> ")
+        action, raw_fact = detect_knowledge_action(userInput)
+
+        # checking if user attempt wants to add knowledge 
+        if action == "add":
+            logic_fact = to_first_order_logic(raw_fact.lower())
+            print(add_fact_to_knowledge_base(logic_fact, kb))
+            continue
+
+        elif action == "check":
+            logic_fact = to_first_order_logic(raw_fact.lower())
+            print(check_fact(logic_fact, kb))
+            continue
+
     except (KeyboardInterrupt, EOFError):
         print("Bye!")
         break

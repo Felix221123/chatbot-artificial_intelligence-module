@@ -3,3 +3,4 @@ python-aiml
 wikipedia
 scikit-learn
 pandas
+nltk
