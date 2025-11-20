@@ -10,7 +10,7 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from format import preprocess_input, detect_knowledge_action, to_first_order_logic
-from rule_base import load_knowledge_base_file, add_fact_to_knowledge_base,check_fact
+from rule_base import load_knowledge_base_file, add_fact_to_knowledge_base,validate_fact
 
 
 # Create a Kernel object.
@@ -82,7 +82,7 @@ while True:
 
         elif action == "check":
             logic_fact = to_first_order_logic(raw_fact.lower())
-            print(check_fact(logic_fact, kb))
+            print(validate_fact(logic_fact, kb))
             continue
 
     except (KeyboardInterrupt, EOFError):

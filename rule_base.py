@@ -68,7 +68,7 @@ def add_fact_to_knowledge_base(statement, knowledge_base):
 
 
 # checking fact validity
-def check_fact(statement, knowledge_base):
+def validate_fact(statement, knowledge_base):
     """
     Checks if a statement logically follows from the knowledge Base.
     Returns: 'Correct', 'Incorrect', or 'I don’t know'
