@@ -7,6 +7,38 @@
 import re
 
 
+_TYPO_FIX = {
+    "infaltion": "inflation",
+    "crytocurrency": "cryptocurrency",
+}
+
+_PLURAL_MAP = {
+    "bonds": "bond",
+    "stocks": "stock",
+    "securities": "security",
+    "prices": "prices",
+}
+
+
+
+def _fix_typos(text: str) -> str:
+    for bad, good in _TYPO_FIX.items():
+        text = re.sub(rf"\b{re.escape(bad)}\b", good, text)
+    return text
+
+def _clean_entity(phrase: str) -> str:
+    # remove articles + join underscores
+    tokens = [t for t in phrase.strip().lower().split() if t not in ("a", "an", "the")]
+    if not tokens:
+        return phrase.strip().lower().replace(" ", "_")
+
+    head = tokens[0]
+    head = _PLURAL_MAP.get(head, head)
+    return head.replace(" ", "_")
+
+
+
+
 # function to preprocess text before vectorizing to find a match
 def preprocess_input(text):
     text = text.lower()
@@ -91,36 +123,72 @@ def detect_knowledge_action(user_input: str):
     return (None, None)
 
 
+
+def _singularize(word: str) -> str:
+    w = word.strip().lower()
+    if len(w) > 3 and w.endswith("s") and not w.endswith("ss"):
+        return w[:-1]
+    return w
+
+
+
+
 # function converts sentences to first order logic for fact checking
-def to_first_order_logic(statement: str):
+def to_first_order_logic(statement: str) -> str:
     """
-    Convert a simple English-like statement into First Order Logic.
-    Handles pattern: 'X is Y' (optionally with 'a/an/the'),
-    mapping to: predicate(subject), all lowercase.
-
-    Examples:
-        'bitcoin is security'       -> 'security(bitcoin)'
-        'bond is a security'        -> 'security(bond)'
-        'apple is a company'        -> 'company(apple)'
-
-    If no ' is ' is found, assumes the user already wrote FOL
-    and just returns the stripped, lowercased string.
+    Supports:
+      - X is Y -> y(x)
+      - X verb Y -> verb(x,y)
     """
-    text = statement.strip().lower().rstrip(".")
+    text = statement.strip().lower().rstrip(".?!")
+    text = _fix_typos(text)
 
-    if " is " not in text:
-        # Assume it's already FOL or something more complex
-        return text
+    # Passive patterns with spaces: "interest is paid by borrower"
+    m = re.match(r"^(.+?)\s+is\s+paid\s+by\s+(.+)$", text)
+    if m:
+        left, right = m.groups()
+        return f"paidby({_clean_entity(left)},{_clean_entity(right)})"
 
-    left, right = text.split(" is ", 1)
+    m = re.match(r"^(.+?)\s+is\s+paid\s+to\s+(.+)$", text)
+    if m:
+        left, right = m.groups()
+        return f"paidto({_clean_entity(left)},{_clean_entity(right)})"
 
-    subject = left.strip().replace(" ", "_")
+    # 1) "X is Y" OR "X is <binaryverb> Y"
+    if " is " in text:
+        left, right = text.split(" is ", 1)
+        subj = _clean_entity(left)
 
-    # Strip articles from the predicate part
-    right_tokens = [t for t in right.split() if t not in ("a", "an", "the")]
-    if not right_tokens:
-        return text 
+        right_tokens = [t for t in right.split() if t not in ("a", "an", "the")]
+        if not right_tokens:
+            return text
 
-    predicate = right_tokens[0]  
+        pred = right_tokens[0]
+        pred = _PLURAL_MAP.get(pred, pred)
 
-    return f"{predicate.lower()}({subject.lower()})"
+        # special case: "interest is paidby a borrower" / "interest is paidto a lender"
+        if pred in ("paidby", "paidto") and len(right_tokens) >= 2:
+            obj = _PLURAL_MAP.get(right_tokens[1], right_tokens[1])
+            return f"{pred}({subj},{_clean_entity(obj)})"
+
+        # normal unary: "bond is security"
+        return f"{pred}({subj})"
+
+    # 2) Binary: "X verb Y"
+    m = re.match(r"^(.+?)\s+([a-z_]+)\s+(.+)$", text)
+    if m:
+        subj_raw, verb, obj_raw = m.groups()
+        subj = _clean_entity(subj_raw)
+        obj = _clean_entity(obj_raw)
+
+        # map "borrower pays interest" -> paidby(interest, borrower)
+        if verb in ("pay", "pays", "paid"):
+            return f"paidby({obj},{subj})"
+
+        # map "lender receives interest" -> paidto(interest, lender)
+        if verb in ("receive", "receives", "get", "gets"):
+            return f"paidto({obj},{subj})"
+
+        return f"{verb}({subj},{obj})"
+
+    return text

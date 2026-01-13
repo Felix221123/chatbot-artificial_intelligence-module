@@ -4,3 +4,6 @@ wikipedia
 scikit-learn
 pandas
 nltk
+langdetect 
+openai
+python-dotenv
