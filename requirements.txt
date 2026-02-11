@@ -7,3 +7,9 @@ nltk
 langdetect 
 openai
 python-dotenv
+tensorflow
+numpy
+pillow
+matplotlib
+opencv-python
+keras-tuner

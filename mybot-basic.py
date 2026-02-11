@@ -14,6 +14,8 @@ from rule_base import load_knowledge_base_file, add_fact_to_knowledge_base,valid
 from multilingual import Translator
 from nltk.sem import Expression
 from explain_reasoning import validate_fact_with_explanation
+from image_classification import CryptoLogoClassifier, classify_with_dialog
+
 
 
 # calling the translator class
@@ -30,6 +32,10 @@ qa_df = pd.read_csv("financial-qa.csv", quotechar='"', escapechar='\\')
 # Loading the knowledge based file
 kb = load_knowledge_base_file("knowledge_base.csv")
 print(f"Knowledge base loaded with {len(kb)} finance rules.")
+
+# creating classifier and loading image classification model
+logo_clf = CryptoLogoClassifier("crypto_logo_model_tuned.h5", "labels_logo.json")
+
 
 # Extra facts to make sure
 extra_facts = [
@@ -227,6 +233,9 @@ while True:
                 out_en = wSummary
             except:
                 out_en = "Sorry, I do not know that. Be more specific!"
+        elif cmd == 2:
+            out_en = classify_with_dialog(logo_clf, open_preview=True)
+
         elif cmd == 99:
             # AIML couldn't handle the question → use cosine similarity
             out_en = find_similar_question(preprocess_input(userInput_en))

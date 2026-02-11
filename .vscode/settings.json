@@ -4,6 +4,7 @@
         "aiml",
         "dotenv",
         "mybot",
+        "solana",
         "srai"
     ]
 }

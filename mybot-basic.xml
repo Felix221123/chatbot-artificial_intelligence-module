@@ -147,6 +147,26 @@
 </category>
 
 <category>
+  <pattern>WHAT IS IN THIS IMAGE</pattern>
+  <template>#2$CLASSIFY_IMAGE</template>
+</category>
+
+<category>
+  <pattern>WHAT IS THIS IMAGE</pattern>
+  <template>#2$CLASSIFY_IMAGE</template>
+</category>
+
+<category>
+  <pattern>CLASSIFY IMAGE</pattern>
+  <template>#2$CLASSIFY_IMAGE</template>
+</category>
+
+<category>
+  <pattern>IDENTIFY THIS IMAGE</pattern>
+  <template>#2$CLASSIFY_IMAGE</template>
+</category>
+
+<category>
   <pattern>WHAT IS LIQUIDITY</pattern>
   <template>Liquidity refers to how quickly and easily an asset can be converted into cash without significantly affecting its price.</template>
 </category>
