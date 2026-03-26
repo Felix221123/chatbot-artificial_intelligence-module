@@ -1,4 +1,4 @@
 {
-  "dropout": 0.2,
-  "lr_head": 0.003
+  "dropout": 0.25,
+  "lr_head": 0.001
 }

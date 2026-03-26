@@ -4,7 +4,7 @@ wikipedia
 scikit-learn
 pandas
 nltk
-langdetect 
+langdetect
 openai
 python-dotenv
 tensorflow
@@ -13,3 +13,4 @@ pillow
 matplotlib
 opencv-python
 keras-tuner
+tensorboard

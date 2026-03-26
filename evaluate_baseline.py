@@ -16,7 +16,7 @@ def load_split(split):
     )
 
 test_ds = load_split("test")
-model = tf.keras.models.load_model("crypto_logo_model.h5", compile=False)
+model = tf.keras.models.load_model("crypto_logo_model_tuned.h5", compile=False)
 model.compile(loss="sparse_categorical_crossentropy", metrics=["accuracy"])
 
 loss, acc = model.evaluate(test_ds, verbose=1)

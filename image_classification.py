@@ -5,7 +5,7 @@ import tensorflow as tf
 from PIL import Image
 import subprocess
 
-IMG_SIZE = (160, 160)
+image_size = (160, 160)
 
 def pick_image_file_mac(prompt="Choose an image to classify"):
     # Native macOS file chooser (no tkinter)
@@ -22,7 +22,7 @@ class CryptoLogoClassifier:
             self.labels = json.load(f)
 
     def _prep(self, path: str) -> np.ndarray:
-        img = Image.open(path).convert("RGB").resize(IMG_SIZE)
+        img = Image.open(path).convert("RGB").resize(image_size)
         x = np.array(img, dtype=np.float32)   # IMPORTANT: don't divide by 255
         return np.expand_dims(x, axis=0)
 

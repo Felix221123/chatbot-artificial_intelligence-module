@@ -9,7 +9,7 @@ labels = json.load(open("labels_logo.json"))
 
 def prep(path):
     img = Image.open(path).convert("RGB").resize(IMG_SIZE)
-    x = np.array(img, dtype=np.float32)   # don't divide by 255
+    x = np.array(img, dtype=np.float32)   
     return np.expand_dims(x, axis=0)
 
 path = input("Enter image path: ").strip()

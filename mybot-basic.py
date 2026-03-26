@@ -85,7 +85,7 @@ def find_similar_question(user_input):
     similarities = cosine_similarity(user_vec, X)
     idx = similarities.argmax()
     score = similarities[0, idx]
-    if score > 0.4:  
+    if score > 0.4:
         return qa_df.iloc[idx]['Answer']
     else:
         return "Sorry, I don't have an answer for that yet."
@@ -139,11 +139,11 @@ last_logic_fact = None       # store last checked FOL for "why?" follow-up
 
 # Main loop
 while True:
-    #get user input
+    # get user input
     try:
         userInput = input("> ")
 
-        # detect + translate IN -> English
+        # detect & translate IN to English
         user_lang, userInput_en = translator.to_english(userInput)
 
         # SAFETY: if translation didn't change the text, don't force a non-English output language
@@ -153,7 +153,7 @@ while True:
         txt = userInput_en.strip()
         lower = txt.lower()
 
-        # 2) Handle "why" / "explain" ALONE (follow-up)
+        # Handle "why" / "explain" ALONE (follow-up)
         if lower in ("why", "why?", "why is that", "why is that?", "explain", "explain?"):
             if last_logic_fact:
                 out_en = validate_fact_with_explanation(last_logic_fact, kb)
@@ -164,7 +164,7 @@ while True:
             continue
 
 
-        # 3) Explain mode (must happen BEFORE detect_knowledge_action)
+        # Explain mode (must happen BEFORE detect_knowledge_action)
         explain_mode = lower.startswith("why ") or lower.startswith("explain ")
         if explain_mode:
             if lower.startswith("why "):
@@ -172,7 +172,7 @@ while True:
             else:
                 userInput_en = txt[8:].strip()
 
-        # 4) Detect add/check action (ON THE ENGLISH TEXT)
+        # Detect add/check action (ON THE ENGLISH TEXT)
         action, raw_fact = detect_knowledge_action(userInput_en)
 
         # Optional UX: treat "is X a Y" as a check even without "check that"
@@ -188,7 +188,7 @@ while True:
             continue
 
 
-        # 6) CHECK (+ explanation if explain_mode)
+        # CHECK (explanation if explain_mode)
         elif action == "check":
             # normalize yes/no questions like "is bond a security"
             if raw_fact.lower().startswith(("is ", "are ")):
@@ -210,16 +210,16 @@ while True:
         break
 
 
-    #pre-process user input and determine response agent (if needed)
+    # pre-process user input and determine response agent (if needed)
     responseAgent = 'aiml'
 
     out_en = ""
 
-    #activate selected response agent
+    # activate selected response agent
     if responseAgent == 'aiml':
         answer = kern.respond(userInput_en.upper())
 
-    #post-process the answer for commands
+    # post-process the answer for commands
     if answer and answer[0] == '#':
         params = answer[1:].split('$')
         cmd = int(params[0])
@@ -247,5 +247,5 @@ while True:
         else:
             out_en = answer
 
-    # translate OUT -> user language
+    # translate OUT to user language
     print(translator.from_english(out_en, user_lang))

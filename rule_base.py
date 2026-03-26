@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 
-# A basic chatbot design --- a starting point for developing your own chatbot
 
-#######################################################
 #  Initialise Natural language toolkit package
 
 from nltk.sem import Expression
@@ -42,14 +40,14 @@ def load_knowledge_base_file(file_path="knowledge_base.csv"):
                     print(f"Invalid expression in knowledge_base: {expr_str} -> {e}")
 
     except FileNotFoundError:
-        print(f"⚠️ Knowledge base file '{file_path}' not found.")
+        print(f"Knowledge base file '{file_path}' not found.")
 
     return knowledge_base
 
 
 
 
-# Adding a new fact 
+# Adding a new fact
 def add_fact_to_knowledge_base(statement, knowledge_base):
     """
     Adds a new fact to the Knowledge Base if it doesn't contradict existing facts.

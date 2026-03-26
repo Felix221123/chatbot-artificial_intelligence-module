@@ -3,13 +3,13 @@ from pathlib import Path
 import numpy as np
 from PIL import Image, ImageEnhance, ImageFilter, ImageOps
 
-SEEDS_DIR = Path("seeds")
-OUT_DIR = Path("finance_dataset")
+seeds_directory = Path("seeds")
+output_directory = Path("finance_dataset")
 
 CLASSES = ["bitcoin", "ethereum", "solana", "xrp", "litecoin"]
 
 
-IMG_SIZE = (128, 128)
+image_size = (128, 128)
 
 # Targets per split (per class)
 TARGETS = {
@@ -28,7 +28,7 @@ random.seed(42)
 def ensure_dirs():
     for split in ["train", "val", "test"]:
         for c in CLASSES:
-            (OUT_DIR / split / c).mkdir(parents=True, exist_ok=True)
+            (output_directory / split / c).mkdir(parents=True, exist_ok=True)
 
 def list_images(folder: Path):
     exts = {".png", ".jpg", ".jpeg", ".bmp", ".webp"}
@@ -101,22 +101,22 @@ def augment_and_save(seed_path: Path, out_path: Path, is_logo: bool):
     img = Image.open(seed_path)
 
     if is_logo:
-        bg = make_background(IMG_SIZE)
+        bg = make_background(image_size)
         aug = augment_image(img, is_logo=True)
         composed = composite_logo_on_bg(aug, bg)
-        final = composed.resize(IMG_SIZE, Image.Resampling.LANCZOS).convert("RGB")
+        final = composed.resize(image_size, Image.Resampling.LANCZOS).convert("RGB")
     else:
         # For charts: keep structure, mild transforms, no random backgrounds
         img = img.convert("RGB")
         aug = augment_image(img, is_logo=False).convert("RGB")
         # random crop/pad to keep consistent size
-        aug = ImageOps.fit(aug, IMG_SIZE, method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
+        aug = ImageOps.fit(aug, image_size, method=Image.Resampling.LANCZOS, centering=(0.5, 0.5))
         final = aug
 
     final.save(out_path, format="JPEG", quality=92)
 
 def build_class(cname: str):
-    seed_folder = SEEDS_DIR / cname
+    seed_folder = seeds_directory / cname
     seeds = list_images(seed_folder)
     if len(seeds) < (REAL_VAL + REAL_TEST + 1):
         print(f"[WARN] {cname}: only {len(seeds)} seed images. Try to collect more for better generalisation.")
@@ -130,18 +130,18 @@ def build_class(cname: str):
 
     # Copy real val/test
     for p in val_real:
-        dst = OUT_DIR / "val" / cname / f"{uuid.uuid4().hex}.jpg"
-        Image.open(p).convert("RGB").resize(IMG_SIZE, Image.Resampling.LANCZOS).save(dst, "JPEG", quality=92)
+        dst = output_directory / "val" / cname / f"{uuid.uuid4().hex}.jpg"
+        Image.open(p).convert("RGB").resize(image_size, Image.Resampling.LANCZOS).save(dst, "JPEG", quality=92)
 
     for p in test_real:
-        dst = OUT_DIR / "test" / cname / f"{uuid.uuid4().hex}.jpg"
-        Image.open(p).convert("RGB").resize(IMG_SIZE, Image.Resampling.LANCZOS).save(dst, "JPEG", quality=92)
+        dst = output_directory / "test" / cname / f"{uuid.uuid4().hex}.jpg"
+        Image.open(p).convert("RGB").resize(image_size, Image.Resampling.LANCZOS).save(dst, "JPEG", quality=92)
 
     # For training: generate until target reached
     is_logo = cname in {"bitcoin", "ethereum", "solana", "xrp", "litecoin"}
     target_train = TARGETS["train"]
 
-    out_train_dir = OUT_DIR / "train" / cname
+    out_train_dir = output_directory / "train" / cname
     existing = len(list_images(out_train_dir))
     needed = max(0, target_train - existing)
 
@@ -157,7 +157,7 @@ def main():
     ensure_dirs()
     for c in CLASSES:
         build_class(c)
-    print("Done. Generated dataset at:", OUT_DIR)
+    print("Done. Generated dataset at:", output_directory)
 
 if __name__ == "__main__":
     main()
